@@ -12,6 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import cl.axel.rodriguez.pruebaseleccion.domain.FirstRequest;
 import cl.axel.rodriguez.pruebaseleccion.domain.FirstResponse;
@@ -26,6 +28,7 @@ public class PruebaSeleccionResource {
 	private static final String IN_FORMAT_DATE = "HH:mm";
 	private static final String OUT_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ss.sZ";
 	private static final String PATTERN_WORD_VALIDATE = "[a-zA-Z]+";
+	private static final String ERROR_400 = "Error 400 -bad request";
 
     /**
      * Method handling HTTP GET requests. The returned object will be sent
@@ -36,22 +39,30 @@ public class PruebaSeleccionResource {
     @POST
     @Path("/word")
     @Consumes(MediaType.APPLICATION_JSON)
-    public FirstResponse getIt(FirstRequest request) {
+    public Response getIt(FirstRequest request) {
     	if(Pattern.matches(PATTERN_WORD_VALIDATE, request.getData()) 
     			&& request.getData().length() == 4)
-    		return generateResponse("00", request.getData().toUpperCase(), "OK");
-    	else 
-    		return generateResponse("400", request.getData().toUpperCase(), "ERROR");
+       		return Response.ok(generateResponse("200", request.getData().toUpperCase(), "OK"), 
+       				MediaType.APPLICATION_JSON).build();
+    	else
+            return Response.status(Status.BAD_REQUEST).entity(ERROR_400).build();  
     }
     
     @GET
     @Path("/time")
-    public FirstResponse time(@QueryParam("value") String value) throws ParseException {
+    public Response time(@QueryParam("value") String value) {
     	SimpleDateFormat hourFormat = new SimpleDateFormat(IN_FORMAT_DATE);
-    	Date date = hourFormat.parse(value);
-    	String formatted = new SimpleDateFormat(OUT_FORMAT_DATE)
-                .format(date);
-    	return generateResponse("00", formatted, "OK");
+    	Date date;
+		try {
+			date = hourFormat.parse(value);
+			String formatted = new SimpleDateFormat(OUT_FORMAT_DATE)
+	                .format(date);
+	    	return Response.ok(generateResponse("200", formatted, "OK"), 
+       				MediaType.APPLICATION_JSON).build();
+		} catch (ParseException e) {
+			return Response.status(Status.BAD_REQUEST).entity(ERROR_400).build();
+		}
+    	
     }
     
     private FirstResponse generateResponse(String code, String data, String description) {
