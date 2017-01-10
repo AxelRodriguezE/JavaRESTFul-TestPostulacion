@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
+/**
+ * @author Axel
+ *
+ */
 @XmlRootElement
 public class FirstRequest implements Serializable{
 	

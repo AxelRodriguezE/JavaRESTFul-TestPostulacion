@@ -19,13 +19,14 @@ import cl.axel.rodriguez.pruebaseleccion.domain.FirstRequest;
 import cl.axel.rodriguez.pruebaseleccion.domain.FirstResponse;
 
 /**
- * Root resource (exposed at "myresource" path)
+ * @author Axel
+ *
  */
 @Path("/")
 @Produces(MediaType.APPLICATION_JSON)
 public class PruebaSeleccionResource {
 	
-	private static final String IN_FORMAT_DATE = "HH:mm";
+	private static final String IN_FORMAT_HOUR = "HH:mm:ss";
 	private static final String OUT_FORMAT_DATE = "yyyy-MM-dd'T'HH:mm:ss.sZ";
 	private static final String PATTERN_WORD_VALIDATE = "[a-zA-Z]+";
 	private static final String ERROR_400 = "Error 400 -bad request";
@@ -38,6 +39,7 @@ public class PruebaSeleccionResource {
      */
     @POST
     @Path("/word")
+    @Produces("application/json")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response getIt(FirstRequest request) {
     	if(Pattern.matches(PATTERN_WORD_VALIDATE, request.getData()) 
@@ -50,8 +52,9 @@ public class PruebaSeleccionResource {
     
     @GET
     @Path("/time")
+    @Produces("application/json")
     public Response time(@QueryParam("value") String value) {
-    	SimpleDateFormat hourFormat = new SimpleDateFormat(IN_FORMAT_DATE);
+    	SimpleDateFormat hourFormat = new SimpleDateFormat(IN_FORMAT_HOUR);
     	Date date;
 		try {
 			date = hourFormat.parse(value);

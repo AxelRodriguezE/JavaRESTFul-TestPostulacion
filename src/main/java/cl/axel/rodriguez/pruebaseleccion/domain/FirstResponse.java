@@ -2,6 +2,10 @@ package cl.axel.rodriguez.pruebaseleccion.domain;
 
 import java.io.Serializable;
 
+/**
+ * @author Axel
+ *
+ */
 public class FirstResponse implements Serializable{
 
 	private static final long serialVersionUID = 4173389914440920150L;
